@@ -13,7 +13,7 @@ class Room:
         self.entry_fee = entry_fee
 
     def admit_guest(self, guest):
-        if self.check_room_limit:
+        if (self.check_room_limit == True) and (guest.check_sufficient_funds(self.entry_fee) == True):
             self.guest_list.append(guest)
             guest.pay_entry_fee(self.entry_fee)
             self.add_money_to_till(self.entry_fee)
@@ -25,10 +25,12 @@ class Room:
             self.guest_list.remove(guest)
 
     def check_room_limit(self):
-        if len(self.guest_list) < self.room_limit:
-            return True
+        room_full = False
+        while len(self.guest_list) < self.room_limit:
+            room_full = False
         else:
-            return False
+            room_full = False
+        return room_full
         
     def add_money_to_till(self, amount):
         self.till += amount

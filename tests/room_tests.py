@@ -7,7 +7,7 @@ from src.song import Song
 class TestRoom(unittest.TestCase):
     
     def setUp(self):
-        self.room = Room("Super Stars", 100.00, 2, 5)
+        self.room = Room("Super Stars", 100.00, 2, 5.00)
         self.guest_01 = Guest("Monica", 40.00, "I Will Survive")
         self.guest_02 = Guest("Pheobe", 70.00, "Dancing Queen")
         self.guest_03 = Guest("Chandler", 10.00, "Sweet Caroline")
@@ -31,16 +31,16 @@ class TestRoom(unittest.TestCase):
     def test_guest_room_limit_set(self):
         self.assertEqual(2, self.room.room_limit)
 
-    def test_guest_list_does_not_exceed_limit(self):
+    def test_room_limit_returns_True_when_room_has_space(self):
         self.assertEqual(True, self.room.check_room_limit())
-
-    def test_guest_list_full(self):
+    
+    def test_room_limit_returns_False_when_room_is_full(self):
         self.room.admit_guest(self.guest_01)
         self.room.admit_guest(self.guest_02)
         self.room.admit_guest(self.guest_03)
         self.assertEqual(False, self.room.check_room_limit())
 
-    def test_guest_can_be_admitted_to_room(self):
+    def test_guest_admitted_when_room_has_space_and_enough_money(self):
         self.room.admit_guest(self.guest_01)
         self.assertEqual(1, len(self.room.guest_list))
 
@@ -53,7 +53,7 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(1, len(self.room.guest_list))
 
     def test_money_can_be_added_to_till(self):
-        self.room.add_money_to_till(self.guest_01.pay_entry_fee(self.room.entry_fee))
+        self.room.add_money_to_till(self.room.entry_fee)
         self.assertEqual(105.00, self.room.till)
 
     def test_obtain_guest_fav_song(self):

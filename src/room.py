@@ -16,6 +16,7 @@ class Room:
         if self.check_room_limit:
             self.guest_list.append(guest)
             guest.pay_entry_fee(self.entry_fee)
+            self.add_money_to_till(self.entry_fee)
         else:
             return "Sorry the room is currently full."
 

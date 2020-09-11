@@ -10,7 +10,7 @@ class Guest:
     def pay_entry_fee(self, amount):
         if self.check_sufficient_funds(amount):
             self.wallet -= amount
-        return amount
+
 
     def check_sufficient_funds(self, item):
         return self.wallet >= item

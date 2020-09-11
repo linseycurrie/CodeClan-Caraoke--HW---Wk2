@@ -5,7 +5,7 @@ from src.room import Room
 class TestGuest(unittest.TestCase):
 
     def setUp(self):
-        self.room = Room("Super Stars", 100.00, 2, 5)
+        self.room = Room("Super Stars", 100.00, 2, 5.00)
         self.guest = Guest("Joey", 50.00, "Don't Stop Believin'")
 
 

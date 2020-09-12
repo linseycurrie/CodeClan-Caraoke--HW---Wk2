@@ -10,15 +10,16 @@ class Room:
         self.name = name
         self.till = till
         self.guest_list = []
-        self.playlist = {}
+        self.playlist = []
         self.room_limit = room_limit
         self.entry_fee = entry_fee
 
-    def admit_guest(self, guest):
+    def admit_guest(self, guest, songs):
         if (self.check_if_guest_can_be_admitted(guest) == True):
             self.guest_list.append(guest)
             guest.pay_entry_fee(self.entry_fee)
             self.add_money_to_till(self.entry_fee)
+            self.add_favourite_song_to_playlist(guest, songs)
         else:
             return "Sorry the room is currently full."
 
@@ -50,19 +51,23 @@ class Room:
         fav_song = self.get_guest_favourite_song(guest)
         if fav_song in songs.keys():
             song_to_add = songs.get(str(fav_song))
-            self.playlist[str(fav_song)] = (song_to_add)
+            self.playlist.append(song_to_add)
 
     # def remove_guest_song_from_playlist(self, guest):
     #     song_name = self.get_guest_favourite_song(guest)
-    #     song_to_remove = self.playlist[song_name]
-    #     self.playlist.pop(str(song_to_remove))
+    #     print(self.playlist)
+    #     self.playlist.index(str(song_name))
+    #     print(song_name)
+    #     self.playlist.remove(song_name)
 
-    def play_song_from_playlist(self, songs):
-        song_list = list(self.playlist.items())
-        play_song = random.choice(song_list)
+    def play_song_from_playlist(self):
+        random_index = random.choice(range(len(self.playlist)))
+        return self.playlist[random_index]
 
-        return print(play_song)
-
-    
+    def guest_cheers(self, songs):
+        for guest in self.guest_list:
+            song_name = guest.favourite_song
+            if self.play_song_from_playlist() == songs[str(song_name)]:
+                return guest.cheer_for_fav_song()
 
     

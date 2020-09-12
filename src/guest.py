@@ -15,3 +15,5 @@ class Guest:
     def has_sufficient_funds(self, item):
         return self.wallet >= item
 
+    def cheer_for_fav_song(self):
+        return "Woo, that's my tune!"

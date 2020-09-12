@@ -27,7 +27,7 @@ class TestRoom(unittest.TestCase):
         self.assertEqual([], self.room.guest_list)
 
     def test_room_has_empty_playlist(self):
-         self.assertEqual({}, self.room.playlist)
+         self.assertEqual([], self.room.playlist)
 
     def test_guest_room_limit_set(self):
         self.assertEqual(2, self.room.room_limit)
@@ -36,31 +36,31 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(True, self.room.check_room_has_space())
     
     def test_room_has_space_returns_False_when_room_is_full(self):
-        self.room.admit_guest(self.guest)
-        self.room.admit_guest(self.rich_guest)
-        self.room.admit_guest(self.rich_guest)
+        self.room.admit_guest(self.guest, self.songs)
+        self.room.admit_guest(self.rich_guest, self.songs)
+        self.room.admit_guest(self.rich_guest, self.songs)
         self.assertEqual(False, self.room.check_room_has_space())
 
     def test_guest_admitted_when_room_has_space_and_enough_money(self):
-        self.room.admit_guest(self.guest)
+        self.room.admit_guest(self.guest, self.songs)
         self.assertEqual(1, len(self.room.guest_list))
 
     def test_guest_not_admitted_when_room_has_space_but_not_enough_money(self):
-        self.room.admit_guest(self.poor_guest)
-        self.assertEqual(0, len(self.room.guest_list))    
+        self.assertEqual("Sorry the room is currently full.", self.room.admit_guest(self.poor_guest, self.songs))    
 
     def test_guest_not_admitted_when_has_enough_money_but_capacity_full(self):
-        self.room.admit_guest(self.guest)
-        self.room.admit_guest(self.rich_guest)
-        self.room.admit_guest(self.guest)
-        self.assertEqual(2, len(self.room.guest_list)) 
+        self.room.admit_guest(self.guest, self.songs)
+        self.room.admit_guest(self.rich_guest, self.songs)
+        self.assertEqual("Sorry the room is currently full.",self.room.admit_guest(self.guest, self.songs))
+        self.assertEqual(2, len(self.room.guest_list))
 
     def test_remove_guest_from_guest_list(self):
+        self.room.admit_guest(self.guest, self.songs)
         self.room.remove_guest(self.guest)
         self.assertEqual(0, len(self.room.guest_list))
 
     def test_guest_can_be_admitted_when_room_empty(self):
-        self.room.admit_guest(self.guest)
+        self.room.admit_guest(self.guest, self.songs)
         self.assertEqual(1, len(self.room.guest_list))
 
     def test_money_can_be_added_to_till(self):
@@ -82,5 +82,10 @@ class TestRoom(unittest.TestCase):
 
     def test_play_song_from_playlist(self):
         self.room.add_favourite_song_to_playlist(self.guest, self.songs)
-        song = self.songs["I Will Survive"]
-        self.assertEqual(song, self.room.play_song_from_playlist() )
+        self.assertEqual(self.songs["I Will Survive"] , self.room.play_song_from_playlist())
+
+    def test_guest_cheers_when_fav_song_is_played(self):
+        self.room.admit_guest(self.guest, self.songs)
+        self.room.admit_guest(self.rich_guest, self.songs)
+        self.room.admit_guest(self.poor_guest, self.songs)
+        self.assertEqual("Woo, that's my tune!", self.room.guest_cheers(self.songs))

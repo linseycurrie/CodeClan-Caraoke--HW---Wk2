@@ -1,12 +1,21 @@
 import unittest
 from src.guest import Guest
 from src.room import Room
+from src.song import Song
 
 class TestGuest(unittest.TestCase):
 
     def setUp(self):
-        self.room = Room("Super Stars", 100.00, 2, 5.00)
-        self.guest = Guest("Joey", 50.00, "Don't Stop Believin'")
+        self.song = { 
+            "Dancing Queen": Song("Dancing Queen", "ABBA"),
+            "I Will Survive": Song("I Will Survive", "Gloria Gaynor"),
+            "Sweet Caroline": Song("Sweet Caroline", "Neil Diamond")
+        }
+        self.vip_room = Room("Super Stars", 100.00, 1, 6.00, self.song)
+        self.room = Room("Screechers", 100.00, 2, 5.00, self.song)
+        self.guest = Guest("Joey", 50.00, "Don't Stop Believin'", "The Floss", "non-VIP")
+        self.vip_guest = Guest("Ross", 30.00, "Sweet Caroline", "Moonwalk", "VIP")
+
 
 
     def test_guest_has_name(self):

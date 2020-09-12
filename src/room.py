@@ -15,41 +15,53 @@ class Room:
         self.entry_fee = entry_fee
         self.song_list = song_list
 
-    def admit_guest(self, guest):
-        if (self.check_if_guest_can_be_admitted(guest) == True):
-            self.guest_list.append(guest)
-            guest.pay_entry_fee(self.entry_fee)
-            self.add_money_to_till(self.entry_fee)
-            self.add_favourite_song_to_playlist(guest)
+
+
+    def admit_guest(self, guest, vip_room, non_vip_room):
+        if self.check_which_room_guest_to_be_admitted(guest) == "VIP" and (self.check_if_guest_can_be_admitted(guest, vip_room) == True):
+            self.pay_entry_fee(guest, vip_room)
+            vip_room.admit_guest_and_add_song_to_playlist(guest, vip_room)
+            return "admitted"
+        elif (self.check_if_guest_can_be_admitted(guest, non_vip_room) == True):
+            self.pay_entry_fee(guest, non_vip_room)
+            non_vip_room.admit_guest_and_add_song_to_playlist(guest, non_vip_room)
+            return "admitted"
         else:
             return "Sorry the room is currently full."
 
-    def remove_guest(self, guest):
-        if guest in self.guest_list:
-            self.guest_list.remove(guest)
+    def pay_entry_fee(self, guest, room):
+        guest.pay_entry_fee(room.entry_fee)
+        room.add_money_to_till(room.entry_fee)
+
+    def admit_guest_and_add_song_to_playlist(self, guest, room):
+        room.guest_list.append(guest)
+        room.add_favourite_song_to_playlist(guest)
+
+
     
     def check_which_room_guest_to_be_admitted(self, guest):
-        if guest.status == "VIP":
+        if guest.guest_status == "VIP":
             return "VIP"
         else:
             return "non-VIP"
     
-    def check_if_guest_can_be_admitted(self, guest):
-        if (self.check_room_has_space() == True) and (guest.has_sufficient_funds(self.entry_fee) == True):
+    def check_if_guest_can_be_admitted(self, guest, room):
+        if (room.check_room_has_space() == True) and (guest.has_sufficient_funds(room.entry_fee) == True):
             return True
 
-    def get_size_of_guest_list(self):
-        return len(self.guest_list)
-            
-
     def check_room_has_space(self):
-        if self.get_size_of_guest_list() < self.room_limit:
+        if len(self.guest_list) < self.room_limit:
             return True
         else:
             return False
         
     def add_money_to_till(self, amount):
         self.till += amount
+    
+    def remove_guest(self, guest, room):
+        if guest in room.guest_list:
+            room.guest_list.remove(guest)
+
 
     def get_guest_favourite_song(self, guest):
         return guest.favourite_song
@@ -71,7 +83,7 @@ class Room:
         random_index = random.choice(range(len(self.playlist)))
         return self.playlist[random_index]
 
-    def guest_cheers(self):
+    def guest_cheers_and_dances(self):
         for guest in self.guest_list:
             song_name = guest.favourite_song
             if self.play_song_from_playlist() == self.song_list[str(song_name)]:

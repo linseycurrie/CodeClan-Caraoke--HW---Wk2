@@ -11,8 +11,8 @@ class TestGuest(unittest.TestCase):
             "I Will Survive": Song("I Will Survive", "Gloria Gaynor"),
             "Sweet Caroline": Song("Sweet Caroline", "Neil Diamond")
         }
-        self.vip_room = Room("Super Stars", 100.00, 1, 6.00, self.song)
-        self.room = Room("Screechers", 100.00, 2, 5.00, self.song)
+        self.vip_room = Room("Super Stars", 100.00, 2, 5.00, self.song)
+        self.non_vip_room = Room("Screechers", 100.00, 3, 2.00, self.song)
         self.guest = Guest("Joey", 50.00, "Don't Stop Believin'", "The Floss", "non-VIP")
         self.vip_guest = Guest("Ross", 30.00, "Sweet Caroline", "Moonwalk", "VIP")
 
@@ -28,7 +28,7 @@ class TestGuest(unittest.TestCase):
         self.assertEqual("Don't Stop Believin'", self.guest.favourite_song)
     
     def test_can_pay_entry_fee_sufficient_funds(self):
-        value = self.room.entry_fee
+        value = self.vip_room.entry_fee
         self.guest.pay_entry_fee(value)
         self.assertEqual(45.00, self.guest.wallet)
     

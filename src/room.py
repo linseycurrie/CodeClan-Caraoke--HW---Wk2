@@ -18,16 +18,19 @@ class Room:
 
 
     def admit_guest(self, guest, vip_room, non_vip_room):
-        if self.check_which_room_guest_to_be_admitted(guest) == "VIP" and (self.check_if_guest_can_be_admitted(guest, vip_room) == True):
-            self.pay_entry_fee(guest, vip_room)
-            vip_room.admit_guest_and_add_song_to_playlist(guest, vip_room)
-            return "admitted"
-        elif (self.check_if_guest_can_be_admitted(guest, non_vip_room) == True):
-            self.pay_entry_fee(guest, non_vip_room)
-            non_vip_room.admit_guest_and_add_song_to_playlist(guest, non_vip_room)
-            return "admitted"
-        else:
-            return "Sorry the room is currently full."
+        # import pdb; pdb.set_trace()
+        if (self.do_you_have_VIP_status(guest) == True):
+            if (self.check_if_guest_can_be_admitted(guest, vip_room)):
+                self.pay_entry_fee(guest, vip_room)
+                vip_room.admit_guest_and_add_song_to_playlist(guest, vip_room)
+            else:
+                return "Sorry, you are not getting in tonight."   
+        elif(self.do_you_have_VIP_status(guest) == False): 
+            if (self.check_if_guest_can_be_admitted(guest, non_vip_room) == True):
+                self.pay_entry_fee(guest, non_vip_room)
+                non_vip_room.admit_guest_and_add_song_to_playlist(guest, non_vip_room)
+            else:
+                return "Sorry, you are not getting in tonight."
 
     def pay_entry_fee(self, guest, room):
         guest.pay_entry_fee(room.entry_fee)
@@ -39,18 +42,20 @@ class Room:
 
 
     
-    def check_which_room_guest_to_be_admitted(self, guest):
-        if guest.guest_status == "VIP":
-            return "VIP"
+    def do_you_have_VIP_status(self, guest):
+        if guest.vip_status == True:
+            return True
         else:
-            return "non-VIP"
+            return False
     
     def check_if_guest_can_be_admitted(self, guest, room):
-        if (room.check_room_has_space() == True) and (guest.has_sufficient_funds(room.entry_fee) == True):
+        if (guest.has_sufficient_funds(room.entry_fee) == True) and (self.check_room_has_space(room) == True):
             return True
+        else:
+            return False
 
-    def check_room_has_space(self):
-        if len(self.guest_list) < self.room_limit:
+    def check_room_has_space(self, room):
+        if len(room.guest_list) < room.room_limit:
             return True
         else:
             return False
@@ -89,4 +94,6 @@ class Room:
             if self.play_song_from_playlist() == self.song_list[str(song_name)]:
                 return guest.cheer_for_fav_song() and guest.show_off_dance_moves()
 
-    
+
+        
+        

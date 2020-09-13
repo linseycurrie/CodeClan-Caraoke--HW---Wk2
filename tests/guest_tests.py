@@ -3,9 +3,13 @@ from src.guest import Guest
 from src.room import Room
 from src.song import Song
 
+
 class TestGuest(unittest.TestCase):
 
     def setUp(self):
+        self.guest = Guest("Joey", 50.00, "Don't Stop Believin'", "The Floss", False)
+        self.rich_guest = Guest("Ross", 70.00, "Sweet Caroline", "Moonwalk", True)
+
         self.song = { 
             "Dancing Queen": Song("Dancing Queen", "ABBA"),
             "I Will Survive": Song("I Will Survive", "Gloria Gaynor"),
@@ -13,8 +17,6 @@ class TestGuest(unittest.TestCase):
         }
         self.vip_room = Room("Super Stars", 100.00, 2, 5.00, self.song)
         self.non_vip_room = Room("Screechers", 100.00, 3, 2.00, self.song)
-        self.guest = Guest("Joey", 50.00, "Don't Stop Believin'", "The Floss", "non-VIP")
-        self.vip_guest = Guest("Ross", 30.00, "Sweet Caroline", "Moonwalk", "VIP")
 
 
 

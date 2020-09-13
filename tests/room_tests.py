@@ -4,19 +4,24 @@ from src.guest import Guest
 from src.room import Room
 from src.song import Song
 
+
 class TestRoom(unittest.TestCase):
     
     def setUp(self):
+        self.rich_guest = Guest("Pheobe", 70.00, "Dancing Queen", "Wiggle", True)
+        self.poor_guest = Guest("Chandler", 4.00, "Sweet Caroline", "Hip-Shake", False)
+        self.guest = Guest("Monica", 40.00, "I Will Survive", "The Worm", True)
+
         self.song = { 
             "Dancing Queen": Song("Dancing Queen", "ABBA"),
             "I Will Survive": Song("I Will Survive", "Gloria Gaynor"),
             "Sweet Caroline": Song("Sweet Caroline", "Neil Diamond")
         }
+
         self.vip_room = Room("Super Stars", 100.00, 2, 5.00, self.song)
         self.non_vip_room = Room("Screechers", 100.00, 3, 2.00, self.song)
-        self.guest = Guest("Monica", 40.00, "I Will Survive", "The Worm", "non-VIP")
-        self.rich_guest = Guest("Pheobe", 70.00, "Dancing Queen", "Wiggle", "VIP")
-        self.poor_guest = Guest("Chandler", 4.00, "Sweet Caroline", "Hip-Shake", "non-VIP")
+
+
 
 
     def test_room_has_a_name(self):
@@ -35,26 +40,32 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(2, self.vip_room.room_limit)
 
     def test_room_has_space_returns_True_when_room_has_space(self):
-        self.assertEqual(True, self.vip_room.check_room_has_space())
+        self.assertEqual(True, self.vip_room.check_room_has_space(self.vip_room))
     
     def test_room_has_space_returns_False_when_room_is_full(self):
-        self.vip_room.admit_guest(self.guest, self.vip_room, self.non_vip_room)
         self.vip_room.admit_guest(self.rich_guest, self.vip_room, self.non_vip_room)
         self.vip_room.admit_guest(self.rich_guest, self.vip_room, self.non_vip_room)
-        self.assertEqual(False, self.vip_room.check_room_has_space())
+        self.vip_room.admit_guest(self.rich_guest, self.vip_room, self.non_vip_room)
+        self.assertEqual(False, self.vip_room.check_room_has_space(self.vip_room))
 
     def test_guest_admitted_when_room_has_space_and_enough_money(self):
-        self.vip_room.admit_guest(self.rich_guest, self.non_vip_room, self.vip_room)
-        self.assertEqual(1, len(self.vip_room.guest_list))
+        self.non_vip_room.admit_guest(self.guest, self.non_vip_room, self.vip_room)
+        self.assertEqual(1, len(self.non_vip_room.guest_list))
 
     def test_guest_not_admitted_when_room_has_space_but_not_enough_money(self):
-        self.assertEqual("Sorry the room is currently full.", self.vip_room.admit_guest(self.poor_guest, self.non_vip_room, self.vip_room))    
+        self.assertEqual("Sorry, you are not getting in tonight.", self.vip_room.admit_guest(self.poor_guest, self.non_vip_room, self.vip_room))    
 
+    
+    
+    # This test passes however is wrong as it passes a VIP guest into a non-vip Room
     def test_guest_not_admitted_when_has_enough_money_but_capacity_full(self):
         self.non_vip_room.admit_guest(self.guest, self.non_vip_room, self.vip_room)
-        self.non_vip_room.admit_guest(self.rich_guest, self.non_vip_room, self.vip_room)
-        self.assertEqual("Sorry the room is currently full.",self.non_vip_room.admit_guest(self.guest, self.non_vip_room, self.vip_room))
-        self.assertEqual(2, len(self.non_vip_room.guest_list))
+        self.non_vip_room.admit_guest(self.guest, self.non_vip_room, self.vip_room)
+        self.non_vip_room.admit_guest(self.guest, self.non_vip_room, self.vip_room)
+        self.non_vip_room.admit_guest(self.guest, self.non_vip_room, self.vip_room)
+        self.assertEqual(3, len(self.non_vip_room.guest_list))
+        self.assertEqual("Sorry, you are not getting in tonight.",self.non_vip_room.admit_guest(self.guest, self.non_vip_room, self.vip_room))
+
 
     def test_remove_guest_from_guest_list(self):
         self.vip_room.admit_guest(self.guest, self.non_vip_room, self.vip_room)
@@ -82,7 +93,8 @@ class TestRoom(unittest.TestCase):
         self.assertEqual(self.song["I Will Survive"] , self.vip_room.play_song_from_playlist())
 
     def test_guest_cheers_when_fav_song_is_played(self):
-        self.vip_room.admit_guest(self.guest, self.non_vip_room, self.vip_room)
         self.vip_room.admit_guest(self.rich_guest, self.non_vip_room, self.vip_room)
-        self.vip_room.admit_guest(self.poor_guest, self.non_vip_room, self.vip_room)
-        self.assertEqual("Woo, that's my tune!" and self.guest.dance_moves, self.vip_room.guest_cheers_and_dances())
+        self.vip_room.admit_guest(self.rich_guest, self.non_vip_room, self.vip_room)
+        self.vip_room.admit_guest(self.rich_guest, self.non_vip_room, self.vip_room)
+        self.assertEqual("Woo, that's my tune!" and self.rich_guest.dance_moves, self.vip_room.guest_cheers_and_dances())
+

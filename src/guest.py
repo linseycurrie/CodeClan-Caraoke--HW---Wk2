@@ -1,12 +1,12 @@
 
 class Guest:
     
-    def __init__(self, name, wallet, fav_song, dance_moves, guest_status):
+    def __init__(self, name, wallet, fav_song, dance_moves, vip_status):
         self.name = name
         self.wallet = wallet
         self.favourite_song = fav_song
         self.dance_moves = dance_moves
-        self.guest_status = guest_status
+        self.vip_status = vip_status
         
     def pay_entry_fee(self, amount):
         if self.has_sufficient_funds(amount):
